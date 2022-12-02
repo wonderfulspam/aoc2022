@@ -94,7 +94,12 @@ fn get_score(my_choice: &Choice, outcome: &Outcome) -> u32 {
     my_choice.value() + outcome.value()
 }
 
-fn part1(input: &str) -> u32 {
+pub fn part1() -> u32 {
+    _part1(INPUT)
+}
+
+// Inner function to allow passing test input
+fn _part1(input: &str) -> u32 {
     input
         .lines()
         .map(|l| {
@@ -109,7 +114,12 @@ fn part1(input: &str) -> u32 {
         })
 }
 
-fn part2(input: &str) -> u32 {
+pub fn part2() -> u32 {
+    _part2(INPUT)
+}
+
+// Inner function to allow passing test input
+fn _part2(input: &str) -> u32 {
     input
         .lines()
         .map(|l| {
@@ -125,8 +135,8 @@ fn part2(input: &str) -> u32 {
 }
 
 pub fn run() -> (String, String) {
-    let part1 = part1(INPUT);
-    let part2 = part2(INPUT);
+    let part1 = part1();
+    let part2 = part2();
 
     (part1.to_string(), part2.to_string())
 }
@@ -147,12 +157,12 @@ mod tests {
     #[test]
     fn test_part1() {
         let input = "A Y\nB X\nC Z";
-        assert_eq!(part1(input), 15);
+        assert_eq!(_part1(input), 15);
     }
 
     #[test]
     fn test_part2() {
         let input = "A Y\nB X\nC Z";
-        assert_eq!(part2(input), 12);
+        assert_eq!(_part2(input), 12);
     }
 }

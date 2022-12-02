@@ -3,7 +3,21 @@ use itertools::Itertools;
 const INPUT: &str = include_str!("../../inputs/day1");
 
 pub fn run() -> (String, String) {
-    let mut elf_counts: Vec<_> = INPUT
+    (part1().to_string(), part2().to_string())
+}
+
+pub fn part1() -> u32 {
+    let mut elf_counts = get_elf_calorie_counts();
+    elf_counts.pop().unwrap()
+}
+
+pub fn part2() -> u32 {
+    let mut elf_counts = get_elf_calorie_counts();
+    elf_counts.pop().unwrap() + elf_counts.pop().unwrap() + elf_counts.pop().unwrap()
+}
+
+fn get_elf_calorie_counts() -> Vec<u32> {
+    INPUT
         .split("\n\n")
         .map(|chunk| {
             chunk
@@ -12,8 +26,5 @@ pub fn run() -> (String, String) {
                 .sum::<u32>()
         })
         .sorted()
-        .collect();
-    let max = elf_counts.pop().unwrap();
-    let max_three = max + elf_counts.pop().unwrap() + elf_counts.pop().unwrap();
-    (max.to_string(), max_three.to_string())
+        .collect()
 }
