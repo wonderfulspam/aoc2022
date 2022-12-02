@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 const INPUT: &str = include_str!("../../inputs/day2");
 
+#[derive(Debug, PartialEq)]
 enum Choice {
     Rock,
     Paper,
@@ -9,7 +10,7 @@ enum Choice {
 }
 
 impl FromStr for Choice {
-    type Err = Box<dyn std::error::Error>;
+    type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let choice = match s {
@@ -46,6 +47,7 @@ impl Choice {
     }
 }
 
+#[derive(Debug, PartialEq)]
 enum Outcome {
     Win,
     Draw,
@@ -53,7 +55,7 @@ enum Outcome {
 }
 
 impl FromStr for Outcome {
-    type Err = Box<dyn std::error::Error>;
+    type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let outcome = match s {
@@ -95,43 +97,47 @@ fn get_score(my_choice: &Choice, outcome: &Outcome) -> u32 {
 }
 
 pub fn part1() -> u32 {
-    _part1(INPUT)
+    part1_inner(INPUT)
 }
 
 // Inner function to allow passing test input
-fn _part1(input: &str) -> u32 {
+fn part1_inner(input: &str) -> u32 {
     input
         .lines()
-        .map(|l| {
-            let (elf_choice, my_choice) = l.split_once(' ').unwrap();
-            let my_choice = Choice::from_str(my_choice).unwrap();
-            let elf_choice = Choice::from_str(elf_choice).unwrap();
-            (my_choice, elf_choice)
-        })
+        .map(choices_from_line)
         .fold(0, |acc, (my_choice, elf_choice)| {
             let outcome = get_outcome(&my_choice, &elf_choice);
             acc + get_score(&my_choice, &outcome)
         })
 }
 
+fn choices_from_line(line: &str) -> (Choice, Choice) {
+    let (elf_choice, my_choice) = line.split_once(' ').unwrap();
+    let my_choice = Choice::from_str(my_choice).unwrap();
+    let elf_choice = Choice::from_str(elf_choice).unwrap();
+    (my_choice, elf_choice)
+}
+
 pub fn part2() -> u32 {
-    _part2(INPUT)
+    part2_inner(INPUT)
 }
 
 // Inner function to allow passing test input
-fn _part2(input: &str) -> u32 {
+fn part2_inner(input: &str) -> u32 {
     input
         .lines()
-        .map(|l| {
-            let (elf_choice, outcome) = l.split_once(' ').unwrap();
-            let elf_choice = Choice::from_str(elf_choice).unwrap();
-            let outcome = Outcome::from_str(outcome).unwrap();
-            let my_choice = Choice::from_outcome(&outcome, &elf_choice);
-            (my_choice, outcome)
-        })
+        .map(choice_and_outcome_from_line)
         .fold(0, |acc, (my_choice, outcome)| {
             acc + get_score(&my_choice, &outcome)
         })
+}
+
+fn choice_and_outcome_from_line(line: &str) -> (Choice, Outcome) {
+    let (elf_choice, outcome) = line.split_once(' ').unwrap();
+    let elf_choice = Choice::from_str(elf_choice).unwrap();
+    let outcome = Outcome::from_str(outcome).unwrap();
+    let my_choice = Choice::from_outcome(&outcome, &elf_choice);
+    (my_choice, outcome)
 }
 
 pub fn run() -> (String, String) {
@@ -143,7 +149,9 @@ pub fn run() -> (String, String) {
 
 #[cfg(test)]
 mod tests {
+    const TEST_INPUT: &str = "A Y\nB X\nC Z";
     use super::*;
+
     #[test]
     fn test_outcome() {
         let my_choice = Choice::Paper;
@@ -155,14 +163,28 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_choices() {
+        let line = "A Y";
+        let (my_choice, elf_choice) = choices_from_line(line);
+        assert_eq!(elf_choice, Choice::Rock);
+        assert_eq!(my_choice, Choice::Paper);
+    }
+
+    #[test]
+    fn test_parse_choice_and_outcome() {
+        let line = "A Y";
+        let (elf_choice, outcome) = choice_and_outcome_from_line(line);
+        assert_eq!(elf_choice, Choice::Rock);
+        assert_eq!(outcome, Outcome::Draw);
+    }
+
+    #[test]
     fn test_part1() {
-        let input = "A Y\nB X\nC Z";
-        assert_eq!(_part1(input), 15);
+        assert_eq!(part1_inner(TEST_INPUT), 15);
     }
 
     #[test]
     fn test_part2() {
-        let input = "A Y\nB X\nC Z";
-        assert_eq!(_part2(input), 12);
+        assert_eq!(part2_inner(TEST_INPUT), 12);
     }
 }
