@@ -1,19 +1,22 @@
-#!/usr/bin/env perl
+package Day02;
 
 use strict;
 use warnings;
 use v5.26;
 
-use File::Slurper qw(read_text);
-use FindBin qw($Bin);
+sub new {
+    my ($class, $input) = @_;
 
-my $input = read_text("$Bin/../inputs/day2");
-my $part1 = part1();
-say "Part 1: $part1";
-my $part2 = part2();
-say "Part 2: $part2";
+    my %self;
+    $self{input} = $input;
+
+    return bless(\%self, $class);
+}
 
 sub part1 {
+    my ($self) = @_;
+    my $input = $self->{input};
+
     my $score = 0;
     for my $line (split '\n', $input) {
         my @choices = split ' ', $line;
@@ -35,6 +38,9 @@ sub part1 {
 }
 
 sub part2 {
+    my ($self) = @_;
+    my $input = $self->{input};
+
     my $score = 0;
     for my $line (split '\n', $input) {
         my @choices = split ' ', $line;
@@ -54,3 +60,5 @@ sub part2 {
     }
     return $score;
 }
+
+1;
