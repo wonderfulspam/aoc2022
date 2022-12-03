@@ -6,9 +6,9 @@ perl day:
 rust day:
   cargo run --quiet {{day}}
 
-# Run Rust benchmarks
-bench_rust:
-  cargo bench
+# Run Rust benchmarks, optionally filtered by day
+bench_rust day="":
+  cargo bench {{ if day != ""  { "--"} else { "" } }} {{day}}
 
 # Install perl dependencies
 install_perl_deps:
