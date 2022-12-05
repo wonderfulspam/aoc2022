@@ -41,4 +41,14 @@ pub fn benchmark_day4_part2(c: &mut Criterion) {
 
 criterion_group!(day4, benchmark_day4_part1, benchmark_day4_part2);
 
-criterion_main!(day1, day2, day3, day4);
+pub fn benchmark_day5_part1(c: &mut Criterion) {
+    c.bench_function("Day 05, Part 1", |b| b.iter(day05::part1));
+}
+
+pub fn benchmark_day5_part2(c: &mut Criterion) {
+    c.bench_function("Day 05, Part 2", |b| b.iter(day05::part2));
+}
+
+criterion_group!(day5, benchmark_day5_part1, benchmark_day5_part2);
+
+criterion_main!(day1, day2, day3, day4, day5);
