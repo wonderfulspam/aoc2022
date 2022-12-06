@@ -33,9 +33,8 @@ sub parse_stacks {
     return \@stacks;
 }
 
-sub part1 {
-    my ($self) = @_;
-    my $input = $self->{input};
+sub inner {
+    my ($input, $callback) = @_;
 
     my ($stacks, $procedures) = split '\n\n', $input;
     $stacks = parse_stacks($stacks);
@@ -43,30 +42,39 @@ sub part1 {
 
     for my $procedure (@procedures) {
         my ($amount, $from, $to) = @{$procedure};
+        $callback->($stacks, $amount, $from, $to);
+    }
+    return join '', map { pop @$_ } @{$stacks};
+}
+
+sub part1 {
+    my ($self) = @_;
+    my $input = $self->{input};
+
+    my $callback = sub {
+        my ($stacks, $amount, $from, $to) = @_;
         do {
             my $item = pop @{$stacks->[$from  - 1]};
             push @{$stacks->[$to - 1]}, $item;
         } while --$amount > 0;
-    }
-    return join '', map { pop @$_ } @{$stacks};
+    };
+
+    return inner($input, $callback);
 }
 
 sub part2 {
     my ($self) = @_;
     my $input = $self->{input};
 
-    my ($stacks, $procedures) = split '\n\n', $input;
-    $stacks = parse_stacks($stacks);
-    my @procedures = map { [ grep { /\d+/ } split ' ' ] } split '\n', $procedures;
-
-    for my $procedure (@procedures) {
-        my ($amount, $from, $to) = @{$procedure};
+    my $callback = sub {
+        my ($stacks, $amount, $from, $to) = @_;
         my @items = splice @{$stacks->[$from  - 1]}, -$amount;
         for (@items) {
             push @{$stacks->[$to - 1]}, $_;
         }
-    }
-    return join '', map { pop @$_ } @{$stacks};
+    };
+
+    return inner($input, $callback);
 }
 
 1;
